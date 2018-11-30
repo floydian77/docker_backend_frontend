@@ -5,6 +5,9 @@ services:
   backend:
     build:
       context: ./
+      args:
+        - DOCKER_USER_UID=${DOCKER_USER_UID}
+        - DOCKER_USER_GID=${DOCKER_USER_GID}
       dockerfile: backend.dockerfile
     working_dir: /var/www/backend
     volumes:
@@ -19,6 +22,9 @@ services:
   frontend:
     build:
       context: ./
+      args:
+        - DOCKER_USER_UID=${DOCKER_USER_UID}
+        - DOCKER_USER_GID=${DOCKER_USER_GID}
       dockerfile: frontend.dockerfile
     working_dir: /var/www/frontend
     volumes:
