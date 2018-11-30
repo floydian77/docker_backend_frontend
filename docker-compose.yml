@@ -15,16 +15,27 @@ services:
     - DB_HOST=database
     user: ${DOCKER_USER_UID}:${DOCKER_USER_GID}
 
+  # The frontend
+  frontend:
+    build:
+      context: ./
+      dockerfile: frontend.dockerfile
+    working_dir: /var/www/frontend
+    volumes:
+    - ../frontend:/var/www/frontend
+    - ./ssl:/etc/nginx/ssl
+    user: ${DOCKER_USER_UID}:${DOCKER_USER_GID}
+    command: tail -F anything
+
   # The Web Server
   nginx:
     build:
       context: ./
       dockerfile: nginx.dockerfile
     working_dir: /var/www
-    volumes:
-      - ../frontend:/var/www/frontend
     volumes_from:
     - backend
+    - frontend
     ports:
     - ${NGINX_HOST_HTTP_PORT}:80
     - ${NGINX_HOST_HTTPS_PORT}:443
