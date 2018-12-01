@@ -3,3 +3,4 @@
 *.key
 *.csr
 ssl/openssl.cnf
+.idea

@@ -25,7 +25,7 @@ server {
 
     location ~ \.php$ {
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass backend:9000;
+        fastcgi_pass laravel:9000;
         fastcgi_index index.php;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
@@ -44,6 +44,21 @@ server {
 
     error_log  /var/log/nginx/frontend.error.log;
 
-    index index.php index.html;
-    root /var/www/frontend/public;
+    index index.html;
+    root /var/www/frontend/dist;
+
+    location / {
+        try_files $uri $uri/ @rewrites;
+      }
+
+    location @rewrites {
+        rewrite ^(.+)$ /index.html last;
+    }
+
+    location ~* \.(?:ico|css|js|gif|jpe?g|png)$ {
+        # Some basic cache-control for static files to be sent to the browser
+        expires max;
+        add_header Pragma public;
+        add_header Cache-Control "public, must-revalidate, proxy-revalidate";
+    }
 }
