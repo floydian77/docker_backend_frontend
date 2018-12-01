@@ -30,7 +30,9 @@ services:
     user: ${DOCKER_USER_UID}:${DOCKER_USER_GID}
     ports:
       - ${VUE_HOST_HTTP_PORT}:8080
-    command: npm run serve
+    command:
+      /bin/bash -c "init-vue.sh
+      && yarn serve"
 
   # The Web Server
   nginx:
