@@ -1,6 +1,24 @@
 version: '2'
 services:
 
+  # Initialize laravel backend
+  laravel-init:
+    build:
+      context: ./
+      args:
+        - DOCKER_USER_UID=${DOCKER_USER_UID}
+        - DOCKER_USER_GID=${DOCKER_USER_GID}
+      dockerfile: laravel.dockerfile
+    working_dir: /var/www/backend
+    volumes:
+      - ../backend:/var/www/backend
+      - ./ssl:/etc/nginx/ssl
+    environment:
+      - DB_PORT=3306
+      - DB_HOST=database
+    user: ${DOCKER_USER_UID}:${DOCKER_USER_GID}
+    command: init-laravel.sh
+
   # The backend
   laravel:
     build:
@@ -17,6 +35,8 @@ services:
     - DB_PORT=3306
     - DB_HOST=database
     user: ${DOCKER_USER_UID}:${DOCKER_USER_GID}
+    depends_on:
+      - laravel-init
 
   # The frontend
   vue:
@@ -39,7 +59,7 @@ services:
     image: nginx
     working_dir: /var/www
     volumes:
-      - ./nginx.template:/etc/nginx/conf.d/mysite.template
+      - ./conf/nginx/nginx.template:/etc/nginx/conf.d/mysite.template
     volumes_from:
     - laravel
     - vue

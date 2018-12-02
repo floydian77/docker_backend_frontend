@@ -12,7 +12,10 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     gnupg \
     unzip \
+    git \
     --no-install-recommends
+
+COPY scripts/init-laravel.sh /usr/local/bin/
 
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
     && apt-get install -y nodejs
